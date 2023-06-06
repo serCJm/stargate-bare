@@ -65,6 +65,7 @@ export async function stargateBridge({
 				amount,
 				toChainData
 			);
+			console.info`Tx success: ${fromChainData.explorer}/tx/${hash}`;
 			await pollBalance({
 				providerUrl: toChainData.rpc,
 				walletAddress: signer.address,
@@ -91,6 +92,7 @@ export async function stargateBridge({
 				toChainData,
 				toTokenData
 			);
+			console.info`Tx success: ${fromChainData.explorer}/tx/${hash}`;
 			await pollBalance({
 				providerUrl: toChainData.rpc,
 				walletAddress: signer.address,
@@ -100,7 +102,7 @@ export async function stargateBridge({
 			});
 		}
 
-		console.info`Congrats! Funds arrived at the destination: ${toChainData.explorer}/tx/${hash}`;
+		console.info`Congrats! Funds arrived at the destination: ${toChainData.explorer}/address/${signer.address}`;
 	} catch (err) {
 		console.error`Error in stargateBridge: ${err}`;
 		throw err;
