@@ -36,17 +36,6 @@ export async function stargateBridge({
 		const fromTokenData: TokenData = tokenData[fromChain][fromToken];
 		const toTokenData: TokenData = tokenData[toChain][toToken];
 
-		validate(
-			fromChain,
-			fromToken,
-			fromChainData,
-			fromTokenData,
-			toChain,
-			toToken,
-			toChainData,
-			toTokenData
-		);
-
 		const provider = new ethers.JsonRpcProvider(fromChainData.rpc);
 		const signer = new ethers.Wallet(privateKey, provider);
 
@@ -58,7 +47,15 @@ export async function stargateBridge({
 		);
 
 		let hash;
-		if (fromToken === "ETH") {
+		if (fromToken === "ETH" || toToken === "ETH") {
+			validateETH(
+				fromChain,
+				fromToken,
+				fromChainData,
+				toChain,
+				toToken,
+				toChainData
+			);
 			hash = await swapETH(
 				provider,
 				signer,
@@ -73,6 +70,16 @@ export async function stargateBridge({
 				networkName: toChain,
 			});
 		} else {
+			validate(
+				fromChain,
+				fromToken,
+				fromChainData,
+				fromTokenData,
+				toChain,
+				toToken,
+				toChainData,
+				toTokenData
+			);
 			hash = await swapToken(
 				provider,
 				signer,
@@ -113,15 +120,6 @@ function validate(
 		throw new Error(`Unsupported chain ${fromChain}`);
 	if (!fromTokenData || !toTokenData)
 		throw new Error(`Unsupported token ${fromToken} on chain ${fromChain}`);
-	if (
-		(fromToken === "ETH" && toToken !== "ETH") ||
-		(toToken === "ETH" && fromToken !== "ETH")
-	)
-		throw new Error("Can only swap ETH to ETH");
-	if (!fromChainData.stargateETHContract || !toChainData.stargateETHContract)
-		throw new Error(
-			`ETH swap is not supported between chains ${fromChain} and ${toChain}`
-		);
 
 	const isRouteSupported: boolean = fromTokenData.supportedRoutes.some(
 		(item: string) => {
@@ -133,6 +131,25 @@ function validate(
 	if (!isRouteSupported)
 		throw new Error(
 			"Swap route is not supported. Change destination chain or token. |Check: https://stargateprotocol.gitbook.io/stargate/developers/stargate-chain-paths"
+		);
+}
+
+function validateETH(
+	fromChain: string,
+	fromToken: string,
+	fromChainData: ChainData,
+	toChain: string,
+	toToken: string,
+	toChainData: ChainData
+) {
+	if (
+		(fromToken === "ETH" && toToken !== "ETH") ||
+		(toToken === "ETH" && fromToken !== "ETH")
+	)
+		throw new Error("Can only swap ETH to ETH");
+	if (!fromChainData.stargateETHContract || !toChainData.stargateETHContract)
+		throw new Error(
+			`ETH swap is not supported between chains ${fromChain} and ${toChain}`
 		);
 }
 
