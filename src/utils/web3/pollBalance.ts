@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 import { setTimeout } from "timers/promises";
-import { tokenABI } from "../../stargate/tokenABI";
+import { tokenABI } from "../../stargate/ABIs/tokenABI";
 
 const POLL_DELAY = 120000;
 

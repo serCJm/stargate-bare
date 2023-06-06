@@ -4,9 +4,9 @@ import { tokenData } from "../../data/tokens-data";
 import { ChainData, StargateChains, TokenData } from "../types";
 import { estimateGas } from "../utils/web3/estimateGas";
 import { pollBalance } from "../utils/web3/pollBalance";
-import { stargateABI } from "./stargateABI";
-import { stargateETHABI } from "./stargateETHABI";
-import { tokenABI } from "./tokenABI";
+import { stargateABI } from "./ABIs/stargateABI";
+import { stargateETHABI } from "./ABIs/stargateETHABI";
+import { tokenABI } from "./ABIs/tokenABI";
 
 const SLIPPAGE = BigInt(5); // 0.5% slippage
 
