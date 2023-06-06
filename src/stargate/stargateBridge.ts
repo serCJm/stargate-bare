@@ -7,6 +7,7 @@ import { pollBalance } from "../utils/web3/pollBalance";
 import { stargateABI } from "./ABIs/stargateABI";
 import { stargateETHABI } from "./ABIs/stargateETHABI";
 import { tokenABI } from "./ABIs/tokenABI";
+import { validate, validateETH } from "./validate";
 
 const SLIPPAGE = BigInt(5); // 0.5% slippage
 
@@ -104,53 +105,6 @@ export async function stargateBridge({
 		console.error`Error in stargateBridge: ${err}`;
 		throw err;
 	}
-}
-
-function validate(
-	fromChain: string,
-	fromToken: string,
-	fromChainData: ChainData,
-	fromTokenData: TokenData,
-	toChain: string,
-	toToken: string,
-	toChainData: ChainData,
-	toTokenData: TokenData
-) {
-	if (!fromChainData || !toChainData)
-		throw new Error(`Unsupported chain ${fromChain}`);
-	if (!fromTokenData || !toTokenData)
-		throw new Error(`Unsupported token ${fromToken} on chain ${fromChain}`);
-
-	const isRouteSupported: boolean = fromTokenData.supportedRoutes.some(
-		(item: string) => {
-			return (
-				item.toLowerCase().includes(toChain) && item.includes(toToken)
-			);
-		}
-	);
-	if (!isRouteSupported)
-		throw new Error(
-			"Swap route is not supported. Change destination chain or token. |Check: https://stargateprotocol.gitbook.io/stargate/developers/stargate-chain-paths"
-		);
-}
-
-function validateETH(
-	fromChain: string,
-	fromToken: string,
-	fromChainData: ChainData,
-	toChain: string,
-	toToken: string,
-	toChainData: ChainData
-) {
-	if (
-		(fromToken === "ETH" && toToken !== "ETH") ||
-		(toToken === "ETH" && fromToken !== "ETH")
-	)
-		throw new Error("Can only swap ETH to ETH");
-	if (!fromChainData.stargateETHContract || !toChainData.stargateETHContract)
-		throw new Error(
-			`ETH swap is not supported between chains ${fromChain} and ${toChain}`
-		);
 }
 
 async function swapToken(
