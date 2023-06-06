@@ -3,7 +3,7 @@ import { chainData } from "../../data/chain-data";
 import { tokenData } from "../../data/tokens-data";
 import { ChainData, StargateChains, TokenData } from "../types";
 import { estimateGas } from "../utils/web3/estimateGas";
-import { pollBalance } from "./pollBalance";
+import { pollBalance } from "../utils/web3/pollBalance";
 import { stargateABI } from "./stargateABI";
 import { stargateETHABI } from "./stargateETHABI";
 import { tokenABI } from "./tokenABI";
